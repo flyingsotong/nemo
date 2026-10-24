@@ -9,9 +9,12 @@ cloud, no telemetry.
 
 ## Installing
 
-There is no installer. Unzip the release into a folder and run `Nemo.exe` — settings,
-model and logs all live beside the executable, so that folder *is* the installation.
-Windows 10 or 11, 64-bit.
+**[Download Nemo-0.1-win64.zip](https://github.com/flyingsotong/nemo/releases/latest)**
+- 48 MB, contains `Nemo.exe` and the engine it needs.
+
+There is no installer. Unzip it into a folder and run `Nemo.exe` — settings, model and
+logs all live beside the executable, so that folder *is* the installation. Windows 10
+or 11, 64-bit.
 
 Windows will warn that the executable is unsigned, because it is: "Windows protected
 your PC", then **More info → Run anyway**. The binary is produced by `build.ps1` in
