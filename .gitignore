@@ -1,0 +1,31 @@
+# Machine-specific and generated files. A clone should be small and safe to
+# publish; none of these belong in history.
+
+# the speech model: 1.6 GB, fetched with --fetch-model
+models/
+
+# the whisper.cpp + ggml runtime: shipped as a release asset, not in git
+bin-vk/
+.unused/
+
+# build output: a release asset, never history
+Nemo.exe
+pill-preview.png
+*.zip
+
+# your settings and your words
+config.json
+vocabulary.txt
+
+# machine-local state: written after the first successful start
+.onboarded
+
+# logs and build droppings
+*.log
+*.part
+build/
+.build/
+dist/
+__pycache__/
+*.pyc
+.venv/

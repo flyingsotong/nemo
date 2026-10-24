@@ -1,0 +1,17 @@
+# Example vocabulary. Copy this to vocabulary.txt and edit it.
+#
+# One term per line. Nemo passes these to whisper as its initial prompt, which
+# biases spelling and capitalisation toward them. Comments start with #.
+#
+# Keep it short - about a dozen entries. A long list starts shaping the writing
+# style of your dictation, not just the spelling, and whisper truncates the prompt
+# once it exceeds its window, so extra terms silently stop mattering.
+#
+# Good candidates: names, brands, product names, acronyms, technical terms,
+# anything whisper reliably misspells.
+
+Kubernetes
+PostgreSQL
+Wi-Fi 7
+Anthropic
+Vercel
