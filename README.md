@@ -353,6 +353,60 @@ editing the colours or geometry.
 That is the whole build. The manifest, icon and three hidden imports matter, so
 they are in the script rather than in shell history.
 
+There is a second mode:
+
+    pwsh -File build.ps1 -Onedir
+
+which produces `dist\Nemo\` - a folder with a 5 MB launcher, the runtime beside it,
+and `bin-vk` copied in - instead of one 27 MB executable. It runs the same program,
+and it exists because of the false-positive problem below: a onefile build unpacks
+itself into `%TEMP%` at every start, and an onedir build never does.
+
+## Antivirus false positives
+
+The release executable is unsigned, and it is a PyInstaller onefile build, which
+means it is a self-extracting archive: on launch it unpacks roughly 200 MB of Python
+and Pillow into `%TEMP%\_MEIxxxxx` and executes from there. That is exactly the shape
+"dropper" heuristics look for, and a freshly published binary has no reputation to
+argue with. So some engines flag it.
+
+At the v0.1 release VirusTotal reported 5 of 70, and every one of them was a
+machine-learning verdict with no behavioural detection behind it:
+
+| Engine | Verdict | What it means |
+|---|---|---|
+| Microsoft | `Trojan:Win32/Wacatac.C.Iml` | Wacatac is Microsoft's generic ML label for packed unsigned binaries; `.Iml` marks it heuristic, not a signature |
+| SentinelOne | `Static AI - Suspicious PE` | static: the file was never executed |
+| SecureAge | `Malicious` | no family, no behaviour, just a verdict |
+| Zillya | `Trojan.Blank.Script.2228` | "Blank" is a generic template; "Script" on a compiled exe is a guess |
+| Bkav Pro | `W32.Malware.777B52C5` | Bkav flags most packed binaries |
+
+The other 65, including the engines that matter most, are clean. Windows Defender -
+the one most people actually run - scans this file on this machine with current
+signatures and reports nothing.
+
+**Check it yourself.** The release notes carry the SHA-256 of the published
+executable. Compare:
+
+    Get-FileHash Nemo.exe -Algorithm SHA256
+
+**Or do not run a binary at all.** The exe exists only so you do not need Python:
+
+    pip install -r requirements.txt
+    python nemo.py
+
+Same program, same hotkey, nothing hidden from that path. If you would rather build
+it, `build.ps1` builds it from the source in this repository. One honest caveat:
+PyInstaller embeds per-build data, so two builds from identical source are not
+byte-identical - this was measured, they differ by a few hundred bytes - so a
+rebuild gives you the same program but not the same hash. Hashing is for checking
+that the file you downloaded is the file that was published, not for comparing
+against your own build. `-Onedir` avoids the temp extraction entirely.
+
+If your engine still objects, it is a false positive and the vendors can be told:
+Microsoft takes reports at <https://www.microsoft.com/en-us/wdsi/filesubmission>,
+and the others have equivalent forms. Reports of this kind are usually cleared.
+
 ## Uninstalling
 
 Delete this folder, the Start menu shortcut, and any startup shortcut.

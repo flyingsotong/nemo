@@ -140,7 +140,13 @@ HALLUCINATIONS = {
 # ---- small helpers --------------------------------------------------------
 def _ensure_console() -> None:
     """A --noconsole build has no stdout. Reattach to the launching terminal if
-    there is one, so --list-devices / --file / --selftest stay usable."""
+    there is one, so --list-devices / --file / --status / --selftest stay usable.
+
+    Every line these modes print is also written to nemo.log by emit(), which is the
+    reliable route: a windowless build's stdout depends on the bootloader's handle
+    plumbing (PyInstaller leaves a dummy stream, and onefile vs onedir differ), so
+    redirection to a file or a pipe can arrive empty. The log never does.
+    """
     if not getattr(sys, "frozen", False) or os.name != "nt":
         return
     try:

@@ -1,11 +1,55 @@
 # Nemo - build record
 
-Version 0.1, 2026-10-23. This is the account of how the thing was put together:
-what it is made of, why each choice was made, what went wrong, and how to rebuild
-it. `README.md` is the user manual; this is the engineering record.
+Version 0.1, 2026-10-23. Published 2026-10-24 at
+<https://github.com/flyingsotong/nemo> (MIT), release `v0.1`. This is the account of
+how the thing was put together: what it is made of, why each choice was made, what
+went wrong, and how to rebuild it. `README.md` is the user manual; this is the
+engineering record.
 
 Built on ALAN-WINDOWS (Windows 11, Ryzen 5 7500F, 31.6 GB RAM, Radeon RX 9070 XT,
 display 3840x2160 at 150%).
+
+## Published
+
+<https://github.com/flyingsotong/nemo> - MIT, release `v0.1`, asset
+`Nemo-0.1-win64.zip` (48 MB: `Nemo.exe` plus `bin-vk`; the model is not included and
+is fetched on first run).
+
+Checked from this machine after the push, rather than assumed: 19 files, no model,
+no binaries and no personal files in the tree; MIT detected by GitHub; and a zip
+rebuilt here hashes to
+`0bf2f3d2bf426036d53901ae7ce41eb241b96bcd9e624e45d9b5eda262981d8c`, which is exactly
+the digest GitHub records for the uploaded asset. That is the useful check, because
+it proves the published binary is this machine's build. Rebuilding a zip is not
+guaranteed to be byte-stable in general (timestamps and entry order), so a mismatch
+would have been inconclusive - a match is conclusive.
+
+**The build is not reproducible, and that bounds what can be claimed.** Two onefile
+builds from identical source, no edits between them, measured:
+
+| Build | Bytes | SHA-256 (first 12) |
+|---|---|---|
+| 1 | 28,781,870 | `e97592c58a87` |
+| 2 | 28,781,576 | `bd933221bad5` |
+
+PyInstaller embeds per-build data, so the hash changes and even the size differs by
+a few hundred bytes. The consequence is worth stating plainly, because the obvious
+verification story is false: "rebuild it and compare hashes" does not work, and
+telling a user to do it would be a claim they could disprove in two commands. What
+is true and checkable is narrower - the published file's hash matches the digest in
+the release notes, and that same hash is what the VirusTotal scan covered. Anyone
+wanting source-level assurance should run `python nemo.py` rather than compare a
+rebuild.
+
+**A note on the antivirus reports.** VirusTotal's first pass on v0.1 was 5/70, all
+machine-learning heuristics: Microsoft's `Wacatac...Iml`, SentinelOne's "Static AI -
+Suspicious PE" (static, so never executed), SecureAge's bare "Malicious", Zillya's
+"Blank" template, Bkav's generic packed-binary signature. The mechanism is the
+onefile build itself: it unpacks ~200 MB into `%TEMP%\_MEIxxxxx` at every launch,
+which is the shape dropper heuristics look for, and an unsigned binary with no
+reputation has nothing to offset it. Defender on this machine scans the exact file
+with current signatures and reports nothing. `build.ps1 -Onedir` exists as the
+structural answer: no temp extraction, so nothing to trigger on.
 
 ## Why it exists
 
